@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Box</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        /* Basic chat styling */
+        #chat-box {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .sent, .received {
+            display: flex;
+            align-items: center;
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .sent {
+            background-color: #2e90a19d;
+            align-self: flex-end;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .received {
+            background-color: #17441e;
+            align-self: flex-start;
+            animation: slideInLeft 0.5s ease-out;
+        }
+
+        /* Animation for message boxes */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Glassmorphism and card design */
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            width: 80%;
+            height: 750px;  /* Set card width to 80% */
+            margin: 0 auto;
+        }
+
+        .card-header {
+            border-bottom: 1px solid #ddd;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+        }
+
+        .card-body {
+            padding: 20px;
+            height: 400px; /* Fix height for chat box */
+            overflow-y: auto;
+        }
+
+        .form-control, .btn-primary {
+            border-radius: 20px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            margin-left: 10px;
+        }
+
+        /* Input field styling */
+        #message-input {
+            border-radius: 25px;
+            padding: 10px;
+        }
+
+        /* Profile Image */
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        /* Align messages and profile picture */
+        .message-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Username and message styling */
+        .message-wrapper p {
+            margin: 0;
+        }
+
+        .icon-btn {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .icon-btn:hover {
+            color: #a5a5a5;
+        }
+
+         /* Styling for sent images */
+         .sent-image {
+            width: 100px; /* Fixed width */
+            height: 100px; /* Fixed height */
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* Modal Styling */
+        .modal-dialog {
+            max-width: 90%;
+        }
+
+        .modal-body img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body class="bg-dark">
+
+    <!-- Navbar Section -->
+    <nav class="navbar navbar-expand-lg navbar-white bg-white">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">JR CHAT BOX</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Profile
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Search Bar -->
+                <form method="GET" action="{% url 'search_profile' %}" class="d-flex ms-auto" role="search">
+                    <input class="form-control me-2" type="search" name="query" placeholder="Search by name or email" aria-label="Search" value="{{ request.GET.query }}">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Chat Section in a Glassmorphism Card -->
+    <div class="container my-5">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>Chat with {{ receiver.username }}</h3>
+            </div>
+            <div class="card-body">
+                <!-- Chat Box -->
+                <div id="chat-box" class="mb-4">
+                    {% for message in messages %}
+                        <div class="message-wrapper {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+                            {% if receiver.userprofile.profile_picture %}
+                            <img src="{{ message.sender.userprofile.profile_picture }}" alt="Profile Picture" class="profile-img">
+                            {% elif sender.userprofile.profile_picture %}
+                            <img src="{{ message.receiver.userprofile.profile_picture }}" alt="Receiver Profile Picture" class="profile-img">
+                            {% else %}
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Profile Picture" class="profile-img">
+                            {% endif %}
+                            <div>
+                                <p><strong>{{ message.sender.username }}</strong></p>
+                                <p>{{ message.content }}</p>
+                                {% if message.file %}
+                                    <p>
+                                        <img src="{{ message.file.url }}" class="sent-image" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-img="{{ message.file.url }}" alt="Sent Image">
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Message Input Form -->
+                <form id="chat-form" class="d-flex" enctype="multipart/form-data">
+                    <!-- Icons for sharing images, files, and PDFs -->
+                    <input type="file" id="file-input" class="form-control me-2" accept="image/*,application/pdf,video/*,audio/*">
+                    <input type="text" id="message-input" class="form-control me-2" placeholder="Type your message here" required>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Viewing Full Image -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Full Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modal-img" src="" alt="Full Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 and custom JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const chatForm = document.getElementById('chat-form');
+        const chatBox = document.getElementById('chat-box');
+
+        chatForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const message = document.getElementById('message-input').value;
+            const file = document.getElementById('file-input').files[0]; // Get the selected file
+
+            const formData = new FormData();
+            formData.append('content', message);
+            if (file) {
+                formData.append('file', file);  // Add file to FormData
+            }
+
+            fetch('{% url "live_chat" receiver.id %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: formData,  // Send the FormData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'sent') {
+                    const newMessage = document.createElement('div');
+                    newMessage.classList.add('sent', 'message-wrapper');
+
+                    let messageContent = '';
+                    if (message) {
+                        messageContent = `<p><strong>You:</strong></p><p>${message}</p>`;
+                    }
+                    if (file) {
+                        const fileUrl = URL.createObjectURL(file);
+                        messageContent = `<p><strong>You:</strong></p><p><a href="${fileUrl}" target="_blank">View File</a></p>`;
+                    }
+
+                    newMessage.innerHTML = `
+                        <img src="{{ request.user.profile.profile_picture.url }}" alt="Profile Picture" class="profile-img">
+                        <div>${messageContent}</div>
+                    `;
+
+                    chatBox.appendChild(newMessage);
+
+                    // Smooth scroll to the latest message
+                    chatBox.scrollTop = chatBox.scrollHeight;
+
+                    document.getElementById('message-input').value = '';
+                    document.getElementById('file-input').value = '';  // Reset file input
+
+                    // Reload page to show new message
+                    location.reload();
+                }
+            });
+        });
+
+        // Modal for viewing the full image
+        const imageModal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modal-img');
+
+        imageModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget; 
+            const imgUrl = button.getAttribute('data-bs-img');
+            modalImg.src = imgUrl;
+        });
+    </script>
+</body>
+</html>

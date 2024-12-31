@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin-top: 0px;
+            color: #1a202c;
+            text-align: left;
+            background-color: #2c4c76;
+            font-family: Arial, sans-serif;
+        }
+        .main-body {
+            padding: 20px;
+        }
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            background-color: #fff;
+            overflow: hidden;
+        }
+        .card-body {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .rounded-circle {
+            border-radius: 50%;
+            border: 3px solid #007bff;
+            transition: transform 0.3s ease;
+        }
+        .rounded-circle:hover {
+            transform: scale(1.1);
+        }
+        .text-secondary {
+            color: #6c757d;
+        }
+        .btn {
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-outline-primary {
+            background-color: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+        }
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .list-group-item {
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .list-group-item h6 {
+            margin: 0;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0px 600px;
+        }
+        .message-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 300px;
+            z-index: 1000;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 1em;
+            color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInOut 5s ease-in-out;
+        }
+        .message-box.success {
+            background-color: #4caf50;
+        }
+        .message-box.error {
+            background-color: #f44336;
+        }
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            10%, 90% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media (max-width: 768px) {
+            .card {
+            max-width: 100%;
+            margin-right: 20px;
+            margin-left: 20px;
+            }
+            .container {
+            max-width: 100%;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+        }
+    </style>
+</head>
+<body>
+  {% if messages %}
+    <div id="messages-container">
+        {% for message in messages %}
+            <div class="message-box {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+  {% endif %}
+
+    <!-- Navbar Section -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark " >
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">JR CHAT BOX</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Profile
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'message_box' %}">Messages</a>
+                    </li>
+                </ul>
+                <!-- Search Bar -->
+                <form method="GET" action="{% url 'search_profile' %}" class="d-flex ms-auto" role="search">
+                    <input class="form-control me-2" type="search" name="query" placeholder="Search by name or email" aria-label="Search" value="{{ request.GET.query }}">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Page Content -->
+    <div class="container ">
+        <div class="main-body">
+            <div class="row gutters-sm">
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center text-center">
+                                {% if profile.profile_picture %}
+                                <img src="{{ profile.profile_picture }}" alt="Profile Picture" class="rounded-circle" width="150">
+                                {% else %}
+                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Profile Picture" class="rounded-circle" width="150">
+                                {% endif %}
+                                <div class="mt-3">
+                                    <h4><b>{{ request.user }}</b></h4>
+                                    <p class="text-secondary mb-1">Followers: <span id="follower-count">{{ user.followers.count }}</span></p>
+                                    <button class="btn btn-primary" id="follow-button" data-user-id="{{ user.id }}">
+                                        Follow
+                                    </button>
+                                    <a href="{% url 'message_box' %}" class="btn btn-outline-primary">Message</a>
+                                    <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary">Edit Profile</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <h6><b>Address : </b></h6>
+                                <span class="text-secondary"><address>{{ profile.address }}</address></span>
+                            </li>
+                            <li class="list-group-item">
+                                <h6><b>Profession : </b></h6>
+                                <span class="text-secondary">{{ profile.profession }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <h6><b>Website : </b></h6>
+                                <span class="text-secondary">{{ profile.website }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <h6><b>GitHub : </b></h6>
+                                <span class="text-secondary">{{ profile.github }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <h6><b>Twitter : </b></h6>
+                                <span class="text-secondary">{{ profile.twitter }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <h6><b>Instagram : </b></h6>
+                                <span class="text-secondary">{{ profile.instagram }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <h6><b>Facebook : </b></h6>
+                                <span class="text-secondary">{{ profile.facebook }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-hide messages after 5 seconds
+        setTimeout(() => {
+            const messages = document.querySelectorAll('.message-box');
+            messages.forEach(message => {
+                message.style.display = 'none';
+            });
+        }, 5000);
+
+        function toggleFollow(userId) {
+    fetch(`/follow-user/${userId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'followed' || data.status === 'unfollowed') {
+            document.getElementById('follower-count').innerText = data.follower_count;
+            document.getElementById('follow-button').innerText = data.status === 'followed' ? 'Unfollow' : 'Follow';
+            alert(data.message);
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+    </script>
+</body>
+</html>
