@@ -1,0 +1,154 @@
+ /* Basic chat styling */
+ #chat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+}
+
+.sent, .received {
+    display: flex;
+    align-items: center;
+    max-width: 70%;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.sent {
+    background-color: #2e90a19d;
+    align-self: flex-end;
+    animation: slideInRight 0.5s ease-out;
+}
+
+.received {
+    background-color: #17441e;
+    align-self: flex-start;
+    animation: slideInLeft 0.5s ease-out;
+}
+
+/* Animation for message boxes */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Glassmorphism and card design */
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    color: white;
+    width: 80%;
+    height: 750px;  /* Set card width to 80% */
+    margin: 0 auto;
+}
+
+.card-header {
+    border-bottom: 1px solid #ddd;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+}
+
+.card-body {
+    padding: 20px;
+    height: 400px; /* Fix height for chat box */
+    overflow-y: auto;
+}
+
+.form-control, .btn-primary {
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+    margin-left: 10px;
+}
+
+/* Input field styling */
+#message-input {
+    border-radius: 25px;
+    padding: 10px;
+}
+
+/* Profile Image */
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+/* Align messages and profile picture */
+.message-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+/* Username and message styling */
+.message-wrapper p {
+    margin: 0;
+}
+
+.icon-btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.icon-btn:hover {
+    color: #a5a5a5;
+}
+
+ /* Styling for sent images */
+ .sent-image {
+    width: 100px; /* Fixed width */
+    height: 100px; /* Fixed height */
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Modal Styling */
+.modal-dialog {
+    max-width: 90%;
+}
+
+.modal-body img {
+    width: 100%;
+    height: auto;
+}

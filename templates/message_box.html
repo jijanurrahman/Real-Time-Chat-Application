@@ -1,108 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Message Box</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f4f7fa;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .message-box {
-            position: fixed;
-            top: 50px;
-            right: 20px;
-            max-width: 350px;
-            z-index: 1000;
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 1em;
-            color: #fff;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: translateY(-30px);
-            animation: fadeInOut 5s ease-in-out forwards;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .message-box.success {
-            background-color: #4caf50;
-        }
-
-        .message-box.error {
-            background-color: #f44336;
-        }
-
-        @keyframes fadeInOut {
-            0%,
-            100% {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-
-            10%,
-            90% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .navbar {
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
-
-        .navbar-toggler {
-            border-color: #fff;
-        }
-
-        .search-bar {
-            position: relative;
-            width: 300px;
-        }
-
-        .search-bar input {
-            border-radius: 50px;
-            padding-left: 30px;
-        }
-
-        .search-bar button {
-            position: absolute;
-            right: 0;
-            top: 0;
-            border-radius: 50px;
-        }
-
-        .message-container {
-            padding-top: 50px;
-        }
-
-        .list-group-item {
-            border-radius: 8px;
-            margin-bottom: 10px;
-            background-color: #fff;
-            transition: transform 0.3s ease;
-        }
-
-        .list-group-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .message-box-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'message_box.css' %}">
 </head>
 
 <body>
