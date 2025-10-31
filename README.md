@@ -1,6 +1,11 @@
 # Real Time Chat Applicaton using Django Framework with User Profiles, Live Chat, and Following System
 ## Author
 - [Jijanur Rahman](https://jijanurrahman.netlify.app)
+
+## 🎥 Demo Video
+
+[![Project Demo Video](https://img.youtube.com/vi/B2QjFlOGWIA/0.jpg)](https://youtu.be/B2QjFlOGWIA)
+
 ## Description
 This project is a feature-rich social networking platform built with Django, offering functionalities like user authentication,
 user profiles, live chat, and a following system. The platform allows users to sign up, log in, and manage their profiles,
